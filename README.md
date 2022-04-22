@@ -1,3 +1,3 @@
 # go-restful-api-clean-architecture
 
-Golang Restful API with clean architecture implemented, and unit testing
+Golang Restful API coded with clean architecture, and unit testing
