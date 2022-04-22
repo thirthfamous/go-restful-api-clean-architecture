@@ -18,24 +18,11 @@ import (
 	"thirthfamous/golang-restful-api-clean-architecture/model/domain"
 	"thirthfamous/golang-restful-api-clean-architecture/repository"
 	"thirthfamous/golang-restful-api-clean-architecture/service"
-	"time"
 
 	"github.com/go-playground/validator/v10"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/assert"
 )
-
-func setupTestDB() *sql.DB {
-	db, err := sql.Open("mysql", "root@tcp(localhost:3306)/belajar_golang_restful_api_test")
-	helper.PanicIfError(err)
-
-	db.SetMaxIdleConns(5)
-	db.SetMaxOpenConns(20)
-	db.SetConnMaxLifetime(60 * time.Minute)
-	db.SetConnMaxIdleTime(10 * time.Minute)
-
-	return db
-}
 
 func setupRouter(db *sql.DB) http.Handler {
 	validate := validator.New()
@@ -47,13 +34,9 @@ func setupRouter(db *sql.DB) http.Handler {
 	return middleware.NewAuthMiddleware(router)
 }
 
-func truncateCategory(db *sql.DB) {
-	db.Exec("TRUNCATE category")
-}
-
 func TestCreateCategorySuccess(t *testing.T) {
-	db := setupTestDB()
-	truncateCategory(db)
+	db := helper.SetupTestDB()
+	helper.TruncateCategory(db)
 	router := setupRouter(db)
 
 	requestBody := strings.NewReader(`{"name" : "Gadget"}`)
@@ -78,8 +61,8 @@ func TestCreateCategorySuccess(t *testing.T) {
 }
 
 func TestCreateCategoryFailed(t *testing.T) {
-	db := setupTestDB()
-	truncateCategory(db)
+	db := helper.SetupTestDB()
+	helper.TruncateCategory(db)
 	router := setupRouter(db)
 
 	requestBody := strings.NewReader(`{"name" : ""}`)
@@ -103,8 +86,8 @@ func TestCreateCategoryFailed(t *testing.T) {
 }
 
 func TestUpdateCategorySuccess(t *testing.T) {
-	db := setupTestDB()
-	truncateCategory(db)
+	db := helper.SetupTestDB()
+	helper.TruncateCategory(db)
 
 	tx, _ := db.Begin()
 	categoryRepository := repository.NewCategoryRepository()
@@ -138,8 +121,8 @@ func TestUpdateCategorySuccess(t *testing.T) {
 }
 
 func TestUpdateCategoryFailed(t *testing.T) {
-	db := setupTestDB()
-	truncateCategory(db)
+	db := helper.SetupTestDB()
+	helper.TruncateCategory(db)
 
 	tx, _ := db.Begin()
 	categoryRepository := repository.NewCategoryRepository()
@@ -171,8 +154,8 @@ func TestUpdateCategoryFailed(t *testing.T) {
 }
 
 func TestGetCategorySuccess(t *testing.T) {
-	db := setupTestDB()
-	truncateCategory(db)
+	db := helper.SetupTestDB()
+	helper.TruncateCategory(db)
 
 	tx, _ := db.Begin()
 	categoryRepository := repository.NewCategoryRepository()
@@ -204,8 +187,8 @@ func TestGetCategorySuccess(t *testing.T) {
 }
 
 func TestGetCategoryFailed(t *testing.T) {
-	db := setupTestDB()
-	truncateCategory(db)
+	db := helper.SetupTestDB()
+	helper.TruncateCategory(db)
 	router := setupRouter(db)
 
 	request := httptest.NewRequest(http.MethodGet, "http://localhost:3000/api/categories/404", nil)
@@ -227,8 +210,8 @@ func TestGetCategoryFailed(t *testing.T) {
 }
 
 func TestDeleteCategorySuccess(t *testing.T) {
-	db := setupTestDB()
-	truncateCategory(db)
+	db := helper.SetupTestDB()
+	helper.TruncateCategory(db)
 
 	tx, _ := db.Begin()
 	categoryRepository := repository.NewCategoryRepository()
@@ -259,8 +242,8 @@ func TestDeleteCategorySuccess(t *testing.T) {
 }
 
 func TestDeleteCategoryFailed(t *testing.T) {
-	db := setupTestDB()
-	truncateCategory(db)
+	db := helper.SetupTestDB()
+	helper.TruncateCategory(db)
 	router := setupRouter(db)
 
 	request := httptest.NewRequest(http.MethodDelete, "http://localhost:3000/api/categories/404", nil)
@@ -283,8 +266,8 @@ func TestDeleteCategoryFailed(t *testing.T) {
 }
 
 func TestListCategoriesSuccess(t *testing.T) {
-	db := setupTestDB()
-	truncateCategory(db)
+	db := helper.SetupTestDB()
+	helper.TruncateCategory(db)
 
 	tx, _ := db.Begin()
 	categoryRepository := repository.NewCategoryRepository()
@@ -330,8 +313,8 @@ func TestListCategoriesSuccess(t *testing.T) {
 }
 
 func TestUnauthorized(t *testing.T) {
-	db := setupTestDB()
-	truncateCategory(db)
+	db := helper.SetupTestDB()
+	helper.TruncateCategory(db)
 	router := setupRouter(db)
 
 	request := httptest.NewRequest(http.MethodGet, "http://localhost:3000/api/categories", nil)
