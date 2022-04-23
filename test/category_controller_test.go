@@ -272,10 +272,10 @@ func TestListCategoriesSuccess(t *testing.T) {
 	tx, _ := db.Begin()
 	categoryRepository := repository.NewCategoryRepository()
 	category1 := categoryRepository.Save(context.Background(), tx, domain.Category{
-		Name: "Gadget",
+		Name: "Computer",
 	})
 	category2 := categoryRepository.Save(context.Background(), tx, domain.Category{
-		Name: "Computer",
+		Name: "Gadget",
 	})
 	tx.Commit()
 

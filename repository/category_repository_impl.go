@@ -6,6 +6,8 @@ import (
 	"errors"
 	"thirthfamous/golang-restful-api-clean-architecture/helper"
 	"thirthfamous/golang-restful-api-clean-architecture/model/domain"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type CategoryRepositoryImpl struct {

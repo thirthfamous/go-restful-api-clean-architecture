@@ -34,6 +34,7 @@ func TestFindByIdNotFound(t *testing.T) {
 	helper.TruncateCategory(db)
 	categoryRepository := repository.NewCategoryRepository()
 	tx, err := db.Begin()
+	defer helper.CommitOrRollback(tx)
 	helper.PanicIfError(err)
 	notFound, _ := categoryRepository.FindById(ctx, tx, 100)
 	assert.EqualValues(t, notFound, domain.Category{})
@@ -44,12 +45,15 @@ func TestUpdateSuccess(t *testing.T) {
 	db := helper.SetupTestDB()
 	helper.TruncateCategory(db)
 	categoryRepository := repository.NewCategoryRepository()
-	tx, _ := db.Begin()
+	tx, err := db.Begin()
+	defer helper.CommitOrRollback(tx)
+	helper.PanicIfError(err)
 
 	category := domain.Category{
 		Name: "Komputer",
 	}
 	category = categoryRepository.Save(ctx, tx, category)
+
 	result, _ := categoryRepository.FindById(ctx, tx, category.Id)
 
 	assert.Equal(t, category.Id, result.Id)
