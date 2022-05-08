@@ -32,7 +32,8 @@ go get
 // run the tests
 go test ./test
 
-// run the server
+// run the server at http://localhost:3000/api
+// please check apispec.json for details
 go run main.go
 ```
 
